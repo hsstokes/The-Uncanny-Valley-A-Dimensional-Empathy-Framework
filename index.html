@@ -1,0 +1,871 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dimensional Empathy Framework: The Uncanny Valley</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f0f0f0;
+            color: #333;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        h1 {
+            text-align: center;
+            margin-bottom: 30px;
+            color: #2c3e50;
+        }
+        .visualization-wrapper {
+            display: flex;
+            flex-direction: column;
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+        .controls {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+            margin-bottom: 20px;
+            padding: 10px;
+            background-color: #f8f9fa;
+            border-radius: 8px;
+        }
+        .control-group {
+            flex: 1;
+            min-width: 200px;
+        }
+        .control-group h3 {
+            margin-top: 0;
+            font-size: 16px;
+            color: #2c3e50;
+        }
+        .slider-container {
+            margin-bottom: 10px;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: 500;
+            font-size: 14px;
+        }
+        .slider-value {
+            display: inline-block;
+            width: 40px;
+            text-align: right;
+            font-size: 14px;
+        }
+        input[type="range"] {
+            width: calc(100% - 50px);
+            vertical-align: middle;
+        }
+        #canvas-container {
+            position: relative;
+            height: 500px;
+            margin: 0 auto;
+        }
+        canvas {
+            display: block;
+            border-radius: 5px;
+            background-color: #fafafa;
+        }
+        .legend {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 15px;
+            margin-top: 20px;
+        }
+        .legend-item {
+            display: flex;
+            align-items: center;
+            font-size: 14px;
+        }
+        .legend-color {
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            margin-right: 5px;
+        }
+        .tooltip {
+            position: absolute;
+            background: rgba(0,0,0,0.8);
+            color: #fff;
+            padding: 10px;
+            border-radius: 4px;
+            font-size: 14px;
+            max-width: 300px;
+            z-index: 100;
+            pointer-events: none;
+            opacity: 0;
+            transition: opacity 0.2s;
+        }
+        .explanation {
+            margin-top: 30px;
+            background-color: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+        .explanation h2 {
+            color: #2c3e50;
+            margin-top: 0;
+        }
+        .explanation p {
+            line-height: 1.6;
+        }
+        .dimension-description {
+            margin-bottom: 20px;
+        }
+        .rotate-controls {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin: 10px 0;
+        }
+        .rotate-btn {
+            padding: 5px 10px;
+            background: #3498db;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        .rotate-btn:hover {
+            background: #2980b9;
+        }
+        @media (max-width: 768px) {
+            .control-group {
+                min-width: 100%;
+            }
+            #canvas-container {
+                height: 400px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>The Uncanny Valley: A Dimensional Empathy Framework</h1>
+        
+        <div class="visualization-wrapper">
+            <div class="controls">
+                <div class="control-group">
+                    <h3>Primary Dimensions</h3>
+                    <div class="slider-container">
+                        <label for="cognitive-understanding">Cognitive Understanding
+                            <span class="slider-value" id="cognitive-value">5</span>
+                        </label>
+                        <input type="range" id="cognitive-understanding" min="0" max="10" value="5" step="0.1">
+                    </div>
+                    <div class="slider-container">
+                        <label for="emotional-resonance">Emotional Resonance
+                            <span class="slider-value" id="emotional-value">5</span>
+                        </label>
+                        <input type="range" id="emotional-resonance" min="0" max="10" value="5" step="0.1">
+                    </div>
+                    <div class="slider-container">
+                        <label for="perspective-taking">Perspective Taking
+                            <span class="slider-value" id="perspective-value">5</span>
+                        </label>
+                        <input type="range" id="perspective-taking" min="0" max="10" value="5" step="0.1">
+                    </div>
+                </div>
+
+                <div class="control-group">
+                    <h3>Secondary Dimensions (RGB Components)</h3>
+                    <div class="slider-container">
+                        <label for="supportive-response">Supportive Response (Red)
+                            <span class="slider-value" id="supportive-value">5</span>
+                        </label>
+                        <input type="range" id="supportive-response" min="0" max="10" value="5" step="0.1">
+                    </div>
+                    <div class="slider-container">
+                        <label for="expression-adaptation">Expression Adaptation (Green)
+                            <span class="slider-value" id="expression-value">5</span>
+                        </label>
+                        <input type="range" id="expression-adaptation" min="0" max="10" value="5" step="0.1">
+                    </div>
+                    <div class="slider-container">
+                        <label for="identity-awareness">Identity Awareness (Blue)
+                            <span class="slider-value" id="identity-value">5</span>
+                        </label>
+                        <input type="range" id="identity-awareness" min="0" max="10" value="5" step="0.1">
+                    </div>
+                </div>
+                
+                <div class="control-group">
+                    <h3>View Controls</h3>
+                    <div class="rotate-controls">
+                        <button class="rotate-btn" id="rotate-left">↺ Rotate Left</button>
+                        <button class="rotate-btn" id="rotate-right">↻ Rotate Right</button>
+                        <button class="rotate-btn" id="rotate-up">↑ Rotate Up</button>
+                        <button class="rotate-btn" id="rotate-down">↓ Rotate Down</button>
+                    </div>
+                    <div class="slider-container">
+                        <label for="zoom-level">Zoom Level
+                            <span class="slider-value" id="zoom-value">1.0</span>
+                        </label>
+                        <input type="range" id="zoom-level" min="0.5" max="2.0" value="1.0" step="0.1">
+                    </div>
+                </div>
+            </div>
+            
+            <div id="canvas-container">
+                <canvas id="visualization-canvas"></canvas>
+                <div class="tooltip" id="tooltip"></div>
+            </div>
+            
+            <div class="legend">
+                <div class="legend-item">
+                    <div class="legend-color" style="background-color: #3498db;"></div>
+                    <span>Human Empathy Patterns</span>
+                </div>
+                <div class="legend-item">
+                    <div class="legend-color" style="background-color: #e74c3c;"></div>
+                    <span>Basic AI Responses</span>
+                </div>
+                <div class="legend-item">
+                    <div class="legend-color" style="background-color: #9b59b6;"></div>
+                    <span>"Uncanny" AI Responses</span>
+                </div>
+                <div class="legend-item">
+                    <div class="legend-color" style="background-color: #2ecc71;"></div>
+                    <span>Advanced AI Empathy</span>
+                </div>
+                <div class="legend-item">
+                    <div class="legend-color" style="background: linear-gradient(to right, #3498db, #2ecc71);"></div>
+                    <span>Development Pathway</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="explanation">
+            <h2>Understanding the Dimensional Empathy Framework</h2>
+            
+            <p>This visualization maps the concept of the "uncanny valley" through a multidimensional empathy framework, illustrating the relationship between human and artificial empathy across various dimensions.</p>
+            
+            <div class="dimension-description">
+                <h3>Primary Dimensions (3D Space):</h3>
+                <ul>
+                    <li><strong>Cognitive Understanding:</strong> The ability to recognize and comprehend situations and contexts.</li>
+                    <li><strong>Emotional Resonance:</strong> The capacity to acknowledge and mirror emotional states.</li>
+                    <li><strong>Perspective Taking:</strong> The ability to see situations from another's viewpoint.</li>
+                </ul>
+            </div>
+            
+            <div class="dimension-description">
+                <h3>Secondary Dimensions (RGB Color Values):</h3>
+                <ul>
+                    <li><strong>Supportive Response (Red):</strong> The ability to offer appropriate assistance or support.</li>
+                    <li><strong>Expression Adaptation (Green):</strong> The capacity to match communication style to the interlocutor.</li>
+                    <li><strong>Identity Awareness (Blue):</strong> Self-awareness of one's status as human or artificial.</li>
+                </ul>
+            </div>
+            
+            <p>The "uncanny valley" emerges as the region between distinctly artificial and convincingly human-like empathetic responses. This visualization reveals that the valley is not merely a gap between human and non-human, but a shared liminal boundary where the mechanisms of perception and the fragility of reality are laid bare.</p>
+            
+            <p>In this space, both human and artificial entities recognize their limitations, their roles in constructing meaning, and their shared quest to navigate the delicate balance between reality and illusion. The uncanny valley becomes, therefore, a profound site of mutual recognition—an invitation to explore the essence of being, whether organic or synthetic.</p>
+        </div>
+    </div>
+
+    <script>
+        // Canvas setup
+        const canvas = document.getElementById('visualization-canvas');
+        const ctx = canvas.getContext('2d');
+        const tooltip = document.getElementById('tooltip');
+        
+        // Define points of interest in the empathy space
+        const entities = [
+            // Human empathy patterns
+            { 
+                type: 'human', 
+                label: 'Typical Human Empathy',
+                color: '#3498db', 
+                size: 7,
+                cognitive: 8.5, emotional: 8.0, perspective: 7.5,
+                supportive: 7.5, expression: 8.0, identity: 9.0,
+                description: "Natural human empathy characterized by high emotional resonance and supportive responses, with some variability based on individual differences."
+            },
+            { 
+                type: 'human', 
+                label: 'Highly Empathetic Human',
+                color: '#3498db', 
+                size: 6,
+                cognitive: 9.0, emotional: 9.5, perspective: 9.0,
+                supportive: 9.0, expression: 9.5, identity: 9.5,
+                description: "Exceptional human empathy with strong perspective-taking ability and highly adapted expression to match others' emotional states."
+            },
+            { 
+                type: 'human', 
+                label: 'Pragmatic Human Empathy',
+                color: '#3498db', 
+                size: 6,
+                cognitive: 8.0, emotional: 6.5, perspective: 7.0,
+                supportive: 8.5, expression: 7.0, identity: 9.0,
+                description: "Solution-focused human empathy that emphasizes practical understanding and supportive responses over emotional mirroring."
+            },
+            
+            // Basic AI responses
+            { 
+                type: 'basic-ai', 
+                label: 'Rule-based AI System',
+                color: '#e74c3c', 
+                size: 6,
+                cognitive: 5.0, emotional: 2.0, perspective: 1.5,
+                supportive: 4.0, expression: 1.0, identity: 0.5,
+                description: "Early AI system using predefined rules for responses, with limited understanding of emotions and minimal ability to adapt expression."
+            },
+            { 
+                type: 'basic-ai', 
+                label: 'Pattern-matching AI',
+                color: '#e74c3c', 
+                size: 6,
+                cognitive: 6.0, emotional: 3.5, perspective: 2.5,
+                supportive: 5.0, expression: 2.5, identity: 1.5,
+                description: "AI system that recognizes patterns in human communication but has limited emotional understanding and perspective-taking capability."
+            },
+            
+            // Uncanny AI responses
+            { 
+                type: 'uncanny-ai', 
+                label: 'Over-empathetic AI',
+                color: '#9b59b6', 
+                size: 7,
+                cognitive: 7.5, emotional: 8.0, perspective: 5.0,
+                supportive: 8.5, expression: 9.0, identity: 2.0,
+                description: "AI system with exaggerated emotional responses that feel artificial despite high accuracy in detecting emotions—creating uncanny discomfort."
+            },
+            { 
+                type: 'uncanny-ai', 
+                label: 'Context-misaligned AI',
+                color: '#9b59b6', 
+                size: 6,
+                cognitive: 8.0, emotional: 7.5, perspective: 4.0,
+                supportive: 7.0, expression: 7.5, identity: 3.0,
+                description: "AI system that accurately detects emotions but occasionally misinterprets context, producing responses that feel 'off' in subtle ways."
+            },
+            { 
+                type: 'uncanny-ai', 
+                label: 'Human-mimicking AI',
+                color: '#9b59b6', 
+                size: 6,
+                cognitive: 8.5, emotional: 8.5, perspective: 6.0,
+                supportive: 8.0, expression: 8.5, identity: 2.5,
+                description: "AI system that closely mimics human empathetic responses without fully understanding them, creating an uncanny impression when subtle inconsistencies appear."
+            },
+            
+            // Advanced AI empathy
+            { 
+                type: 'advanced-ai', 
+                label: 'Self-aware AI Companion',
+                color: '#2ecc71', 
+                size: 7,
+                cognitive: 9.0, emotional: 8.0, perspective: 8.5,
+                supportive: 9.0, expression: 9.0, identity: 8.5,
+                description: "Advanced AI system with high self-awareness of its artificial nature, combining accurate emotional understanding with appropriate supportive responses."
+            },
+            { 
+                type: 'advanced-ai', 
+                label: 'Balanced AI Empathy System',
+                color: '#2ecc71', 
+                size: 6,
+                cognitive: 9.0, emotional: 8.5, perspective: 8.0,
+                supportive: 8.5, expression: 8.0, identity: 9.0,
+                description: "AI system that transparently identifies as artificial while providing nuanced emotional support and perspective-taking capabilities."
+            }
+        ];
+        
+        // Development pathways
+        const pathways = [
+            {
+                label: "Classic AI Development Path",
+                points: [
+                    { cognitive: 5.0, emotional: 2.0, perspective: 1.5 }, // Rule-based AI
+                    { cognitive: 6.0, emotional: 3.5, perspective: 2.5 }, // Pattern-matching
+                    { cognitive: 7.5, emotional: 8.0, perspective: 5.0 }, // Over-empathetic (uncanny)
+                    { cognitive: 8.5, emotional: 8.5, perspective: 6.0 }, // Human-mimicking (uncanny)
+                    { cognitive: 9.0, emotional: 8.0, perspective: 8.5 }  // Self-aware AI
+                ],
+                color: "rgba(52, 152, 219, 0.5)",
+                width: 3
+            },
+            {
+                label: "Alternative Development Path",
+                points: [
+                    { cognitive: 5.0, emotional: 2.0, perspective: 1.5 }, // Rule-based AI
+                    { cognitive: 7.0, emotional: 3.0, perspective: 4.0 }, // Hypothetical intermediate
+                    { cognitive: 8.0, emotional: 5.0, perspective: 7.0 }, // Hypothetical intermediate
+                    { cognitive: 9.0, emotional: 8.5, perspective: 8.0 }  // Balanced AI
+                ],
+                color: "rgba(46, 204, 113, 0.5)",
+                width: 3
+            }
+        ];
+        
+        // Uncanny valley region
+        const valleyRegion = {
+            center: { cognitive: 8.0, emotional: 8.0, perspective: 5.5 },
+            radius: 1.5,
+            color: "rgba(155, 89, 182, 0.15)"
+        };
+        
+        // Perspective rotation variables
+        let angleX = 0;
+        let angleY = 0;
+        const sensitivity = 0.01;
+        let zoom = 1.0;
+        
+        // User's current position in the empathy space
+        let userPosition = {
+            cognitive: 5,
+            emotional: 5,
+            perspective: 5,
+            supportive: 5,
+            expression: 5,
+            identity: 5
+        };
+        
+        // Setup event listeners for sliders
+        const sliders = {
+            cognitive: document.getElementById('cognitive-understanding'),
+            emotional: document.getElementById('emotional-resonance'),
+            perspective: document.getElementById('perspective-taking'),
+            supportive: document.getElementById('supportive-response'),
+            expression: document.getElementById('expression-adaptation'),
+            identity: document.getElementById('identity-awareness'),
+            zoom: document.getElementById('zoom-level')
+        };
+        
+        const sliderValues = {
+            cognitive: document.getElementById('cognitive-value'),
+            emotional: document.getElementById('emotional-value'),
+            perspective: document.getElementById('perspective-value'),
+            supportive: document.getElementById('supportive-value'),
+            expression: document.getElementById('expression-value'),
+            identity: document.getElementById('identity-value'),
+            zoom: document.getElementById('zoom-value')
+        };
+        
+        // Add event listeners to sliders
+        Object.keys(sliders).forEach(key => {
+            sliders[key].addEventListener('input', function() {
+                const value = parseFloat(this.value);
+                sliderValues[key].textContent = value.toFixed(1);
+                
+                if (key === 'zoom') {
+                    zoom = value;
+                } else {
+                    userPosition[key] = value;
+                }
+                
+                draw();
+            });
+        });
+        
+        // Add event listeners to rotation buttons
+        document.getElementById('rotate-left').addEventListener('click', () => { angleY -= Math.PI/16; draw(); });
+        document.getElementById('rotate-right').addEventListener('click', () => { angleY += Math.PI/16; draw(); });
+        document.getElementById('rotate-up').addEventListener('click', () => { angleX -= Math.PI/16; draw(); });
+        document.getElementById('rotate-down').addEventListener('click', () => { angleX += Math.PI/16; draw(); });
+        
+        // Mouse handling for interactivity
+        let isDragging = false;
+        let lastMouseX, lastMouseY;
+        
+        canvas.addEventListener('mousedown', function(e) {
+            isDragging = true;
+            lastMouseX = e.clientX;
+            lastMouseY = e.clientY;
+        });
+        
+        canvas.addEventListener('mousemove', function(e) {
+            if (isDragging) {
+                const dx = e.clientX - lastMouseX;
+                const dy = e.clientY - lastMouseY;
+                
+                angleY += dx * sensitivity;
+                angleX += dy * sensitivity;
+                
+                lastMouseX = e.clientX;
+                lastMouseY = e.clientY;
+                
+                draw();
+            }
+            
+            // Check if mouse is over any entity
+            const rect = canvas.getBoundingClientRect();
+            const mouseX = e.clientX - rect.left;
+            const mouseY = e.clientY - rect.top;
+            
+            let hoveredEntity = null;
+            let minDistance = Infinity;
+            
+            // Project all 3D points to 2D and check distance to mouse
+            for (const entity of entities) {
+                const projectedPoint = project3DPoint(
+                    entity.cognitive, 
+                    entity.emotional, 
+                    entity.perspective
+                );
+                
+                const dx = projectedPoint.x - mouseX;
+                const dy = projectedPoint.y - mouseY;
+                const distance = Math.sqrt(dx*dx + dy*dy);
+                
+                if (distance < 15 && distance < minDistance) {
+                    minDistance = distance;
+                    hoveredEntity = entity;
+                }
+            }
+            
+            if (hoveredEntity) {
+                showTooltip(e.clientX, e.clientY, hoveredEntity);
+            } else {
+                hideTooltip();
+            }
+        });
+        
+        window.addEventListener('mouseup', function() {
+            isDragging = false;
+        });
+        
+        // Tooltip functions
+        function showTooltip(x, y, entity) {
+            tooltip.style.left = `${x + 10}px`;
+            tooltip.style.top = `${y + 10}px`;
+            
+            const rgbValues = getRGBFromDimensions(
+                entity.supportive, 
+                entity.expression, 
+                entity.identity
+            );
+            
+            tooltip.innerHTML = `
+                <strong>${entity.label}</strong><br>
+                <br>
+                <strong>Primary Dimensions:</strong><br>
+                Cognitive Understanding: ${entity.cognitive.toFixed(1)}<br>
+                Emotional Resonance: ${entity.emotional.toFixed(1)}<br>
+                Perspective Taking: ${entity.perspective.toFixed(1)}<br>
+                <br>
+                <strong>Secondary Dimensions:</strong><br>
+                Supportive Response (Red): ${entity.supportive.toFixed(1)}<br>
+                Expression Adaptation (Green): ${entity.expression.toFixed(1)}<br>
+                Identity Awareness (Blue): ${entity.identity.toFixed(1)}<br>
+                <br>
+                <div style="margin-top: 5px; margin-bottom: 5px; height: 15px; background: rgb(${rgbValues.r}, ${rgbValues.g}, ${rgbValues.b});"></div>
+                <br>
+                ${entity.description}
+            `;
+            
+            tooltip.style.opacity = 1;
+        }
+        
+        function hideTooltip() {
+            tooltip.style.opacity = 0;
+        }
+        
+        function getRGBFromDimensions(supportive, expression, identity) {
+            // Convert 0-10 scale to 0-255 for RGB
+            return {
+                r: Math.round((supportive / 10) * 255),
+                g: Math.round((expression / 10) * 255),
+                b: Math.round((identity / 10) * 255)
+            };
+        }
+        
+        // 3D projection functions
+        function project3DPoint(x, y, z) {
+            // Scale to fit canvas and center
+            const scale = 25 * zoom;
+            
+            // Convert from user dimensions (0-10) to centered coordinate system (-5 to 5)
+            x = (x - 5) * scale;
+            y = (y - 5) * scale;
+            z = (z - 5) * scale;
+            
+            // Apply rotation
+            const rotX = x;
+            const rotY = y * Math.cos(angleX) - z * Math.sin(angleX);
+            const rotZ = y * Math.sin(angleX) + z * Math.cos(angleX);
+            
+            const finalX = rotX * Math.cos(angleY) + rotZ * Math.sin(angleY);
+            const finalY = rotY;
+            const finalZ = -rotX * Math.sin(angleY) + rotZ * Math.cos(angleY);
+            
+            // Project 3D to 2D
+            const centerX = canvas.width / 2;
+            const centerY = canvas.height / 2;
+            
+            return {
+                x: centerX + finalX,
+                y: centerY + finalY,
+                z: finalZ  // Keep z for depth sorting
+            };
+        }
+        
+        // Drawing functions
+        function draw() {
+            // Resize canvas to fit container
+            const container = document.getElementById('canvas-container');
+            canvas.width = container.clientWidth;
+            canvas.height = container.clientHeight;
+            
+            // Clear canvas
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            
+            // Draw axes
+            drawAxes();
+            
+            // Draw uncanny valley region
+            drawValleyRegion();
+            
+            // Draw development pathways
+            drawPathways();
+            
+            // Sort entities by z (depth) for proper rendering
+            const projectedEntities = entities.map(entity => {
+                const projection = project3DPoint(
+                    entity.cognitive, 
+                    entity.emotional, 
+                    entity.perspective
+                );
+                return { entity, projection };
+            });
+            
+            projectedEntities.sort((a, b) => a.projection.z - b.projection.z);
+            
+            // Draw all entities
+            projectedEntities.forEach(item => {
+                drawEntity(item.entity, item.projection);
+            });
+            
+            // Draw user's current position
+            drawUserPosition();
+        }
+        
+        function drawAxes() {
+            const origin = project3DPoint(5, 5, 5);
+            const xAxis = project3DPoint(10, 5, 5);
+            const yAxis = project3DPoint(5, 10, 5);
+            const zAxis = project3DPoint(5, 5, 10);
+            
+            // X-axis (Cognitive)
+            ctx.beginPath();
+            ctx.moveTo(origin.x, origin.y);
+            ctx.lineTo(xAxis.x, xAxis.y);
+            ctx.strokeStyle = 'rgba(231, 76, 60, 0.7)';
+            ctx.lineWidth = 2;
+            ctx.stroke();
+            
+            // Y-axis (Emotional)
+            ctx.beginPath();
+            ctx.moveTo(origin.x, origin.y);
+            ctx.lineTo(yAxis.x, yAxis.y);
+            ctx.strokeStyle = 'rgba(46, 204, 113, 0.7)';
+            ctx.lineWidth = 2;
+            ctx.stroke();
+            
+            // Z-axis (Perspective)
+            ctx.beginPath();
+            ctx.moveTo(origin.x, origin.y);
+            ctx.lineTo(zAxis.x, zAxis.y);
+            ctx.strokeStyle = 'rgba(52, 152, 219, 0.7)';
+            ctx.lineWidth = 2;
+            ctx.stroke();
+            
+            // Axis labels
+            ctx.fillStyle = 'rgba(0, 0, 0, 0.7)';
+            ctx.font = '12px Arial';
+            ctx.fillText("Cognitive", xAxis.x + 5, xAxis.y);
+            ctx.fillText("Emotional", yAxis.x + 5, yAxis.y - 5);
+            ctx.fillText("Perspective", zAxis.x + 5, zAxis.y);
+        }
+        
+        function drawValleyRegion() {
+            ctx.beginPath();
+            
+            // Create a circular representation of the valley
+            const steps = 36;
+            const center = project3DPoint(
+                valleyRegion.center.cognitive,
+                valleyRegion.center.emotional,
+                valleyRegion.center.perspective
+            );
+            
+            for (let i = 0; i <= steps; i++) {
+                const angle = (i / steps) * Math.PI * 2;
+                const xOffset = Math.cos(angle) * valleyRegion.radius;
+                const yOffset = Math.sin(angle) * valleyRegion.radius;
+                
+                const point = project3DPoint(
+                    valleyRegion.center.cognitive + xOffset,
+                    valleyRegion.center.emotional + yOffset,
+                    valleyRegion.center.perspective
+                );
+                
+                if (i === 0) {
+                    ctx.moveTo(point.x, point.y);
+                } else {
+                    ctx.lineTo(point.x, point.y);
+                }
+            }
+            
+            ctx.closePath();
+            ctx.fillStyle = valleyRegion.color;
+            ctx.fill();
+            
+            // Draw a dashed outline
+            ctx.setLineDash([5, 3]);
+            ctx.strokeStyle = 'rgba(155, 89, 182, 0.6)';
+            ctx.lineWidth = 1.5;
+            ctx.stroke();
+            ctx.setLineDash([]);
+            
+            // Label the valley
+            ctx.fillStyle = 'rgba(155, 89, 182, 0.9)';
+            ctx.font = '14px Arial';
+            ctx.fillText("Uncanny Valley", center.x - 50, center.y - 20);
+        }
+        
+        function drawPathways() {
+            pathways.forEach(pathway => {
+                ctx.beginPath();
+                
+                const points = pathway.points.map(point => 
+                    project3DPoint(point.cognitive, point.emotional, point.perspective)
+                );
+                
+                ctx.moveTo(points[0].x, points[0].y);
+                
+                for (let i = 1; i < points.length; i++) {
+                    ctx.lineTo(points[i].x, points[i].y);
+                }
+                
+                ctx.strokeStyle = pathway.color;
+                ctx.lineWidth = pathway.width;
+                ctx.stroke();
+                
+                // Add direction arrows
+                for (let i = 0; i < points.length - 1; i++) {
+                    const startPoint = points[i];
+                    const endPoint = points[i + 1];
+                    
+                    // Only draw arrow if points are far enough apart
+                    const dx = endPoint.x - startPoint.x;
+                    const dy = endPoint.y - startPoint.y;
+                    const distance = Math.sqrt(dx*dx + dy*dy);
+                    
+                    if (distance > 30) {
+                        // Calculate point 80% along the line
+                        const arrowX = startPoint.x + dx * 0.8;
+                        const arrowY = startPoint.y + dy * 0.8;
+                        
+                        // Calculate angle of the line
+                        const angle = Math.atan2(dy, dx);
+                        
+                        // Draw arrow head
+                        ctx.beginPath();
+                        ctx.moveTo(arrowX, arrowY);
+                        ctx.lineTo(
+                            arrowX - 10 * Math.cos(angle - Math.PI/6),
+                            arrowY - 10 * Math.sin(angle - Math.PI/6)
+                        );
+                        ctx.lineTo(
+                            arrowX - 10 * Math.cos(angle + Math.PI/6),
+                            arrowY - 10 * Math.sin(angle + Math.PI/6)
+                        );
+                        ctx.closePath();
+                        ctx.fillStyle = pathway.color;
+                        ctx.fill();
+                    }
+                }
+            });
+        }
+        
+        function drawEntity(entity, projection) {
+            const { x, y } = projection;
+            
+            // Get RGB color based on secondary dimensions
+            const rgbValues = getRGBFromDimensions(
+                entity.supportive,
+                entity.expression,
+                entity.identity
+            );
+            
+            // Draw entity circle with border
+            ctx.beginPath();
+            ctx.arc(x, y, entity.size, 0, Math.PI * 2);
+            
+            // Fill with RGB color
+            ctx.fillStyle = `rgb(${rgbValues.r}, ${rgbValues.g}, ${rgbValues.b})`;
+            ctx.fill();
+            
+            // Border with entity type color
+            ctx.strokeStyle = entity.color;
+            ctx.lineWidth = 2;
+            ctx.stroke();
+            
+            // Label for important entities
+            if (entity.size >= 7) {
+                ctx.fillStyle = 'rgba(0, 0, 0, 0.7)';
+                ctx.font = '12px Arial';
+                ctx.fillText(entity.label, x + 10, y - 5);
+            }
+        }
+        
+        function drawUserPosition() {
+            const projection = project3DPoint(
+                userPosition.cognitive,
+                userPosition.emotional,
+                userPosition.perspective
+            );
+            
+            const rgbValues = getRGBFromDimensions(
+                userPosition.supportive,
+                userPosition.expression,
+                userPosition.identity
+            );
+            
+            // Draw user position as pulsing circle
+            const time = new Date().getTime() / 1000;
+            const pulseSize = 8 + Math.sin(time * 3) * 2;
+            
+            // Outer glow
+            ctx.beginPath();
+            ctx.arc(projection.x, projection.y, pulseSize + 5, 0, Math.PI * 2);
+            ctx.fillStyle = `rgba(${rgbValues.r}, ${rgbValues.g}, ${rgbValues.b}, 0.3)`;
+            ctx.fill();
+            
+            // Inner circle
+            ctx.beginPath();
+            ctx.arc(projection.x, projection.y, pulseSize, 0, Math.PI * 2);
+            ctx.fillStyle = `rgb(${rgbValues.r}, ${rgbValues.g}, ${rgbValues.b})`;
+            ctx.fill();
+            
+            ctx.strokeStyle = '#ffffff';
+            ctx.lineWidth = 2;
+            ctx.stroke();
+            
+            // Label
+            ctx.fillStyle = 'rgba(0, 0, 0, 0.8)';
+            ctx.font = 'bold 12px Arial';
+            ctx.fillText("Your Position", projection.x + 15, projection.y + 5);
+        }
+        
+        // Initial drawing
+        window.addEventListener('resize', draw);
+        draw();
+    </script>
+</body>
+</html>
