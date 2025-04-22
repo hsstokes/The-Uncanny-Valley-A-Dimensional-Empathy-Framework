@@ -58,54 +58,7 @@
             border: 1px solid #ccc;
             position: relative;
 }
-         button {
-            background-color: #3498db;
-            color: white;
-            border: none;
-            padding: 10px 20px;
-            margin: 5px;
-            font-size: 16px;
-            cursor: pointer;
-        }
 
-        button:hover {
-            background-color: #2980b9;
-        }
-    </style>
-</head>
-<body>
-    <div class="container">
-        <h1>Empathy Framework Visualization</h1>
-
-        <div class="visualization-wrapper">
-            <h2>Click to Hear Empathy States</h2>
-            <!-- Visualization Buttons -->
-            <button onclick="playNodeAudio('highly_empathetic_human')">Highly Empathetic Human</button>
-            <button onclick="playNodeAudio('self_aware_ai_companion')">Self-Aware AI Companion</button>
-            <button onclick="playNodeAudio('balanced_ai_empathy_system')">Balanced AI Empathy System</button>
-            <button onclick="playNodeAudio('typical_human_empathy')">Typical Human Empathy</button>
-            <button onclick="playNodeAudio('pragmatic_human_empathy')">Pragmatic Human Empathy</button>
-            <button onclick="playNodeAudio('over_empathetic_ai')">Over-Empathetic AI</button>
-            <button onclick="playNodeAudio('context_misaligned_ai')">Context Misaligned AI</button>
-            <button onclick="playNodeAudio('human_mimicking_ai')">Human Mimicking AI</button>
-            <button onclick="playNodeAudio('rules_based_ai_system')">Rules-Based AI System</button>
-            <button onclick="playNodeAudio('pattern_matching_ai')">Pattern Matching AI</button>
-        </div>
-    </div>
-    <script>
-        // Define the audio function
-        function playNodeAudio(nodeId) {
-            const audio = new Audio(`audio_prompts/${nodeId}.mp3`);
-            audio.play();
-        }
-
-        // Simplified way to add event listeners to buttons
-        document.querySelectorAll('.visualization-wrapper button').forEach(button => {
-            button.addEventListener('click', function() {
-                playNodeAudio(this.getAttribute('onclick').split("'")[1]);
-            });
-        });
-    </script>
         
         /* Remove decorative elements */
         .paper-clip {
@@ -1122,36 +1075,6 @@
         
         // Start the visualization
         draw();
-            // Start the visualization
-    
-
-        // 🔊 Add this audio code below the draw call
-        function playNodeAudio(nodeId) {
-          const audioMap = {
-              "highly_empathetic_human": "audio_prompts/highly_empathetic_human.mp3",
-              "self_aware_ai_companion": "audio_prompts/self_aware_ai_companion.mp3",
-              "balanced_ai_empathy_system": "audio_prompts/balanced_ai_empathy_system.mp3",
-              "typical_human_empathy": "audio_prompts/typical_human_empathy.mp3",
-              "pragmatic_human_empathy": "audio_prompts/pragmatic_human_empathy.mp3",
-              "over_empathetic_ai": "audio_prompts/over_empathetic_ai.mp3",
-              "context_misaligned_ai": "audio_prompts/context_misaligned_ai.mp3",
-              "human_mimicking_ai": "audio_prompts/human_mimicking_ai.mp3",
-              "rules_based_ai_system": "audio_prompts/rules_based_ai_system.mp3",
-              "pattern_matching_ai": "audio_prompts/pattern_matching_ai.mp3"
-         };
-
-         const audioSrc = audioMap[nodeId];
-         if (audioSrc) {
-            const audio = new Audio(audioSrc);
-            audio.play();
-         } else {
-            console.warn("No audio assigned to:", nodeId);
-         }
-    }
-</script>
-</body>
-</html>
-
     </script>
 </body>
 </html>
