@@ -420,6 +420,8 @@
             { 
                 type: 'human', 
                 label: 'Typical Human Empathy',
+                id: 'typical_human_empathy',
+                audioFile: 'typical_human_empathy.mp3',
                 color: '#3498db', 
                 size: 7,
                 cognitive: 8.5, emotional: 8.0, perspective: 7.5,
@@ -429,6 +431,8 @@
             { 
                 type: 'human', 
                 label: 'Highly Empathetic Human',
+                id: 'highly_empathetic_human',
+                audioFile: 'highly_empathetic_human.mp3',
                 color: '#3498db', 
                 size: 6,
                 cognitive: 9.0, emotional: 9.5, perspective: 9.0,
@@ -438,6 +442,8 @@
             { 
                 type: 'human', 
                 label: 'Pragmatic Human Empathy',
+                id: 'pragmatic_human_empathy',
+                audioFile: 'pragmatic_human_empathy.mp3',
                 color: '#3498db', 
                 size: 6,
                 cognitive: 8.0, emotional: 6.5, perspective: 7.0,
@@ -449,6 +455,8 @@
             { 
                 type: 'basic-ai', 
                 label: 'Rule-based AI System',
+                id: 'rule_based_ai_system',
+                audioFile: 'rules_based_ai_system.mp3',
                 color: '#e74c3c', 
                 size: 6,
                 cognitive: 5.0, emotional: 2.0, perspective: 1.5,
@@ -458,6 +466,8 @@
             { 
                 type: 'basic-ai', 
                 label: 'Pattern-matching AI',
+                id: 'pattern_matching_ai',
+                audioFile: 'pattern_matching_ai.mp3',
                 color: '#e74c3c', 
                 size: 6,
                 cognitive: 6.0, emotional: 3.5, perspective: 2.5,
@@ -469,6 +479,8 @@
             { 
                 type: 'uncanny-ai', 
                 label: 'Over-empathetic AI',
+                id: 'over_empathetic_ai',
+                audioFile: 'over_empathetic_ai.mp3',
                 color: '#9b59b6', 
                 size: 7,
                 cognitive: 7.5, emotional: 8.0, perspective: 5.0,
@@ -478,6 +490,8 @@
             { 
                 type: 'uncanny-ai', 
                 label: 'Context-misaligned AI',
+                id: 'context_misaligned_ai',
+                audioFile: 'context_misaligned_ai.mp3',
                 color: '#9b59b6', 
                 size: 6,
                 cognitive: 8.0, emotional: 7.5, perspective: 4.0,
@@ -487,6 +501,8 @@
             { 
                 type: 'uncanny-ai', 
                 label: 'Human-mimicking AI',
+                id: 'human_mimicking_ai',
+                audioFile: 'human_mimicking_ai.mp3',
                 color: '#9b59b6', 
                 size: 6,
                 cognitive: 8.5, emotional: 8.5, perspective: 6.0,
@@ -498,6 +514,8 @@
             { 
                 type: 'advanced-ai', 
                 label: 'Self-aware AI Companion',
+                id: 'self_aware_ai_companion',
+                audioFile: 'self_aware_ai_companion.mp3',
                 color: '#2ecc71', 
                 size: 7,
                 cognitive: 9.0, emotional: 8.0, perspective: 8.5,
@@ -507,6 +525,8 @@
             { 
                 type: 'advanced-ai', 
                 label: 'Balanced AI Empathy System',
+                id: 'balanced_ai_empathy_system',
+                audioFile: 'balanced_ai_empathy_system.mp3',
                 color: '#2ecc71', 
                 size: 6,
                 cognitive: 9.0, emotional: 8.5, perspective: 8.0,
@@ -1000,6 +1020,45 @@
                 ctx.fillText(entity.label, x + 10, y - 5);
             }
         }
+        const audioMap = {
+               'balanced-ai-empathy-system': 'audio-prompts/balanced_ai_empathy_system.mp3',
+               'context-misaligned-ai': 'audio-prompts/context_misaligned_ai.mp3',
+               'human-mimicking-ai': 'audio-prompts/human_mimicking_ai.mp3',
+               'over-empathetic-ai': 'audio-prompts/over_empathetic_ai.mp3',
+               'pattern-matching-ai': 'audio-prompts/pattern_matching_ai.mp3',
+               'pragmatic-human-empathy': 'audio-prompts/pragmatic_human_empathy.mp3',
+               'rules-based-ai-system': 'audio-prompts/rules_based_ai_system.mp3',
+               'self-aware-ai-companion': 'audio-prompts/self_aware_ai_companion.mp3',
+               'typical-human-empathy': 'audio-prompts/typical_human_empathy.mp3',
+               'highly-empathetic-human': 'audio-prompts/highly_empathetic_human.mp3'
+         };
+         let audio = new Audio();
+         // Function to handle hover on nodes
+         function onNodeHover(nodeId) {
+                const audioFile = audioMap[nodeId];
+             
+                if (audioFile) {
+                      audio.src = audioFile;
+                      audio.play();
+                }
+        }
+         // Function to stop audio when node is not hovered
+        function onNodeBlur() {
+              audio.pause();
+              audio.currentTime = 0;
+        }
+
+        // Example of node hover event handling (replace with your own logic)
+        canvas.addEventListener('mousemove', function(e) {
+              // Detect if a node is hovered (this depends on how you are creating nodes)
+              const nodeId = getHoveredNodeId(e); // Replace with your logic to detect hovered node
+
+              if (nodeId) {
+                 onNodeHover(nodeId);
+              } else {
+                 onNodeBlur();
+              }
+        });
         
         function drawUserPosition() {
             const projection = project3DPoint(
