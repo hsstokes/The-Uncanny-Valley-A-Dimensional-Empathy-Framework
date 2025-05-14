@@ -42,6 +42,7 @@
             box-shadow: 0 4px 12px rgba(0,0,0,0.1);
             padding: 20px;
             margin-bottom: 20px;
+            min-height: 800px; /* Ensure enough space for visualization */
             
             background-image: 
                 linear-gradient(rgba(255,255,255,0.5), rgba(255,255,255,0.5)), 
@@ -57,8 +58,7 @@
             
             border: 1px solid #ccc;
             position: relative;
-}
-
+        }
         
         /* Remove decorative elements */
         .paper-clip {
@@ -150,15 +150,21 @@
         
         #canvas-container {
             position: relative;
+            min-height: 500px; /* Ensures a minimum height */
             height: 500px;
             margin: 0 auto;
             z-index: 2;
+            width: 100%; /* Ensure it takes full width */
+            display: block; /* Make sure it's a block element */
+            overflow: visible; /* Allows content to overflow for tooltips */
         }
         
         canvas {
             display: block;
             border: 1px solid #ccc;
             background-color: rgba(255, 255, 255, 0.5);
+            width: 100%; /* Make canvas fill container */
+            height: 100%; /* Make canvas fill container */
         }
         
         .legend {
@@ -269,6 +275,7 @@
                 min-width: 100%;
             }
             #canvas-container {
+                min-height: 400px;
                 height: 400px;
             }
             .paper-clip, .paper-tape {
@@ -420,7 +427,7 @@
             { 
                 type: 'human', 
                 label: 'Typical Human Empathy',
-                id: 'typical_human_empathy',
+                id: 'typical-human-empathy',
                 audioFile: 'typical_human_empathy.mp3',
                 color: '#3498db', 
                 size: 7,
@@ -431,7 +438,7 @@
             { 
                 type: 'human', 
                 label: 'Highly Empathetic Human',
-                id: 'highly_empathetic_human',
+                id: 'highly-empathetic-human',
                 audioFile: 'highly_empathetic_human.mp3',
                 color: '#3498db', 
                 size: 6,
@@ -442,7 +449,7 @@
             { 
                 type: 'human', 
                 label: 'Pragmatic Human Empathy',
-                id: 'pragmatic_human_empathy',
+                id: 'pragmatic-human-empathy',
                 audioFile: 'pragmatic_human_empathy.mp3',
                 color: '#3498db', 
                 size: 6,
@@ -455,7 +462,7 @@
             { 
                 type: 'basic-ai', 
                 label: 'Rule-based AI System',
-                id: 'rule_based_ai_system',
+                id: 'rules-based-ai-system',
                 audioFile: 'rules_based_ai_system.mp3',
                 color: '#e74c3c', 
                 size: 6,
@@ -466,7 +473,7 @@
             { 
                 type: 'basic-ai', 
                 label: 'Pattern-matching AI',
-                id: 'pattern_matching_ai',
+                id: 'pattern-matching-ai',
                 audioFile: 'pattern_matching_ai.mp3',
                 color: '#e74c3c', 
                 size: 6,
@@ -479,7 +486,7 @@
             { 
                 type: 'uncanny-ai', 
                 label: 'Over-empathetic AI',
-                id: 'over_empathetic_ai',
+                id: 'over-empathetic-ai',
                 audioFile: 'over_empathetic_ai.mp3',
                 color: '#9b59b6', 
                 size: 7,
@@ -490,7 +497,7 @@
             { 
                 type: 'uncanny-ai', 
                 label: 'Context-misaligned AI',
-                id: 'context_misaligned_ai',
+                id: 'context-misaligned-ai',
                 audioFile: 'context_misaligned_ai.mp3',
                 color: '#9b59b6', 
                 size: 6,
@@ -501,7 +508,7 @@
             { 
                 type: 'uncanny-ai', 
                 label: 'Human-mimicking AI',
-                id: 'human_mimicking_ai',
+                id: 'human-mimicking-ai',
                 audioFile: 'human_mimicking_ai.mp3',
                 color: '#9b59b6', 
                 size: 6,
@@ -514,7 +521,7 @@
             { 
                 type: 'advanced-ai', 
                 label: 'Self-aware AI Companion',
-                id: 'self_aware_ai_companion',
+                id: 'self-aware-ai-companion',
                 audioFile: 'self_aware_ai_companion.mp3',
                 color: '#2ecc71', 
                 size: 7,
@@ -525,7 +532,7 @@
             { 
                 type: 'advanced-ai', 
                 label: 'Balanced AI Empathy System',
-                id: 'balanced_ai_empathy_system',
+                id: 'balanced-ai-empathy-system',
                 audioFile: 'balanced_ai_empathy_system.mp3',
                 color: '#2ecc71', 
                 size: 6,
@@ -680,8 +687,12 @@
             
             if (hoveredEntity) {
                 showTooltip(e.clientX, e.clientY, hoveredEntity);
+                // Trigger audio if applicable
+                onNodeHover(hoveredEntity.id);
             } else {
                 hideTooltip();
+                // Stop audio when not hovering
+                onNodeBlur();
             }
         });
         
@@ -771,6 +782,10 @@
             canvas.width = container.clientWidth;
             canvas.height = container.clientHeight;
             
+            // Force a minimum size if container is too small
+            if (canvas.width < 400) canvas.width = 400;
+            if (canvas.height < 400) canvas.height = 400;
+            
             // Clear canvas
             ctx.clearRect(0, 0, canvas.width, canvas.height);
             
@@ -805,8 +820,6 @@
             
             // Draw user's current position
             drawUserPosition();
-            
-            // Removed the drawHandDrawnElements() call
         }
         
         function drawGrid() {
@@ -848,8 +861,6 @@
                 ctx.stroke();
             }
         }
-        
-        // Removed the drawHandDrawnElements function
         
         function drawAxes() {
             const origin = project3DPoint(5, 5, 5);
@@ -1020,45 +1031,44 @@
                 ctx.fillText(entity.label, x + 10, y - 5);
             }
         }
+        
+        // Audio functionality
         const audioMap = {
-               'balanced-ai-empathy-system': 'audio prompts/balanced_ai_empathy_system.mp3',
-               'context-misaligned-ai': 'audio prompts/context_misaligned_ai.mp3',
-               'human-mimicking-ai': 'audio prompts/human_mimicking_ai.mp3',
-               'over-empathetic-ai': 'audio prompts/over_empathetic_ai.mp3',
-               'pattern-matching-ai': 'audio prompts/pattern_matching_ai.mp3',
-               'pragmatic-human-empathy': 'audio prompts/pragmatic_human_empathy.mp3',
-               'rules-based-ai-system': 'audio prompts/rules_based_ai_system.mp3',
-               'self-aware-ai-companion': 'audio prompts/self_aware_ai_companion.mp3',
-               'typical-human-empathy': 'audio prompts/typical_human_empathy.mp3',
-               'highly-empathetic-human': 'audio prompts/highly_empathetic_human.mp3'
-         };
-         let audio = new Audio();
-         // Function to handle hover on nodes
-         function onNodeHover(nodeId) {
-                const audioFile = audioMap[nodeId];
-             
-                if (audioFile) {
-                      audio.src = audioFile;
-                      audio.play();
-                }
+            'balanced-ai-empathy-system': 'audio prompts/balanced_ai_empathy_system.mp3',
+            'context-misaligned-ai': 'audio prompts/context_misaligned_ai.mp3',
+            'human-mimicking-ai': 'audio prompts/human_mimicking_ai.mp3',
+            'over-empathetic-ai': 'audio prompts/over_empathetic_ai.mp3',
+            'pattern-matching-ai': 'audio prompts/pattern_matching_ai.mp3',
+            'pragmatic-human-empathy': 'audio prompts/pragmatic_human_empathy.mp3',
+            'rules-based-ai-system': 'audio prompts/rules_based_ai_system.mp3',
+            'self-aware-ai-companion': 'audio prompts/self_aware_ai_companion.mp3',
+            'typical-human-empathy': 'audio prompts/typical_human_empathy.mp3',
+            'highly-empathetic-human': 'audio prompts/highly_empathetic_human.mp3'
+        };
+        
+        let audio = new Audio();
+        
+        // Function to handle hover on nodes
+        function onNodeHover(nodeId) {
+            const audioFile = audioMap[nodeId];
+            
+            if (audioFile) {
+                audio.src = audioFile;
+                audio.play();
+            }
         }
-         // Function to stop audio when node is not hovered
+        
+        // Function to stop audio when node is not hovered
         function onNodeBlur() {
-              audio.pause();
-              audio.currentTime = 0;
+            audio.pause();
+            audio.currentTime = 0;
         }
-
-        // Example of node hover event handling (replace with your own logic)
-        canvas.addEventListener('mousemove', function(e) {
-              // Detect if a node is hovered (this depends on how you are creating nodes)
-              const nodeId = getHoveredNodeId(e); // Replace with your logic to detect hovered node
-
-              if (nodeId) {
-                 onNodeHover(nodeId);
-              } else {
-                 onNodeBlur();
-              }
-        });
+        
+        // Helper function for node hover detection
+        function getHoveredNodeId(e) {
+            // This is handled in the mousemove event listener
+            return null;
+        }
         
         function drawUserPosition() {
             const projection = project3DPoint(
@@ -1099,9 +1109,6 @@
             ctx.fillText("Your Position", projection.x + 15, projection.y + 5);
         }
         
-        // Initial drawing
-        window.addEventListener('resize', draw);
-        
         // Add touch support for mobile devices
         canvas.addEventListener('touchstart', function(e) {
             if (e.touches.length === 1) {
@@ -1132,7 +1139,33 @@
             isDragging = false;
         });
         
-        // Start the visualization
+        // Handle window resize
+        window.addEventListener('resize', function() {
+            // Ensure the container has a minimum size
+            const container = document.getElementById('canvas-container');
+            if (container.clientHeight < 500) {
+                container.style.height = "500px";
+            }
+            draw();
+        });
+        
+        // Initialize visualization
+        window.onload = function() {
+            // Ensure proper container size on load
+            const container = document.getElementById('canvas-container');
+            if (container.clientHeight < 500) {
+                container.style.height = "500px";
+            }
+            
+            // Set default camera orientation for better initial view
+            angleX = Math.PI / 12; // Slight tilt down
+            angleY = Math.PI / 6;  // Slight rotation
+            
+            // Start with initial drawing
+            setTimeout(draw, 100); // Short delay to ensure container is fully rendered
+        };
+        
+        // Initial drawing
         draw();
     </script>
 </body>
